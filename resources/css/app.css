@@ -1,0 +1,29 @@
+/* Tailwind v3 untuk halaman Blade buatan sendiri (nota, laporan siap cetak, halaman error) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .bk-pill {
+        @apply inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold;
+    }
+
+    .bk-pill-baru { @apply bg-sky-100 text-sky-800; }
+    .bk-pill-dikerjakan { @apply bg-amber-100 text-amber-800; }
+    .bk-pill-selesai { @apply bg-green-100 text-green-800; }
+    .bk-pill-dibayar { @apply bg-slate-200 text-slate-700; }
+    .bk-pill-mv-masuk { @apply bg-green-100 text-green-800; }
+    .bk-pill-mv-keluar { @apply bg-slate-100 text-slate-700; }
+    .bk-pill-mv-batal { @apply bg-sky-100 text-sky-800; }
+}
+
+@media print {
+    .no-print {
+        display: none !important;
+    }
+
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

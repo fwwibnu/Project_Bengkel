@@ -1,0 +1,10 @@
+DAFTAR FILE YANG HARUS DIHAPUS DARI FOLDER PROJECT
+==================================================
+
+Tidak ada file wajib yang perlu dihapus. Semua file di zip ini cukup ditimpa ke folder project.
+
+Opsional (aman dihapus, sudah tidak dipakai):
+- database/database.sqlite          (sisa bawaan Laravel saat masih pakai SQLite; project memakai MySQL)
+- resources/views/welcome.blade.php (kalau masih ada; halaman "/" sekarang langsung ke login)
+
+Catatan: file ini sendiri (HAPUS_FILE.txt) boleh dihapus setelah dibaca.

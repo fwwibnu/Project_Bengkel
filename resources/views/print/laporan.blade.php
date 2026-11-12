@@ -21,15 +21,15 @@
 @endpush
 
 @section('content')
-    <article class="mx-auto w-full max-w-4xl rounded-xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8 print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0">
-        <header class="mb-6 flex flex-wrap items-start justify-between gap-4 border-b-2 border-slate-900 pb-4">
+    <article class="mx-auto w-full max-w-4xl rounded-xl bg-white p-6 shadow-sm ring-1 ring-stone-200 sm:p-8 print:max-w-none print:rounded-none print:p-0 print:shadow-none print:ring-0">
+        <header class="mb-6 flex flex-wrap items-start justify-between gap-4 border-b-2 border-stone-900 pb-4">
             <div>
                 <p class="text-lg font-bold">{{ $bengkel['nama_lengkap'] }}</p>
-                <p class="text-xs text-slate-600">{{ $bengkel['alamat'] }} · Telp. {{ $bengkel['telepon'] }}</p>
+                <p class="text-xs text-stone-600">{{ $bengkel['alamat'] }} · Telp. {{ $bengkel['telepon'] }}</p>
             </div>
             <div class="text-right">
                 <h1 class="text-base font-bold">{{ $judul }}</h1>
-                <p class="text-sm text-slate-600">Periode {{ $rangeLabel }}</p>
+                <p class="text-sm text-stone-600">Periode {{ $rangeLabel }}</p>
             </div>
         </header>
 
@@ -41,7 +41,7 @@
             @include('laporan._stok', ['data' => $stok, 'withMovements' => true])
         @endif
 
-        <footer class="mt-8 text-xs text-slate-500">
+        <footer class="mt-8 text-xs text-stone-500">
             Dicetak {{ \App\Support\Format::tanggalJam(now()) }} oleh {{ $dicetakOleh?->name }} ({{ $dicetakOleh?->role?->getLabel() }}).
         </footer>
     </article>

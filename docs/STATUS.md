@@ -30,7 +30,7 @@ Kesimpulan audit: F1 sebagian, F2–F12 belum ada.
 | Kode | Fitur | Status | Lokasi utama |
 |---|---|---|---|
 | F1 | Autentikasi & multi-role | **Sudah** | `Filament/Pages/Auth/Login.php`, `Http/Responses/LoginResponse.php`, `Policies/*`, `AppServiceProvider` (Gate), `errors/403` |
-| F2 | Dashboard | **Sudah** | `Filament/Pages/Dashboard.php`, `Filament/Widgets/*`, `Services/ReportService.php` |
+| F2 | Dashboard | **Sudah** | `Filament/Pages/Dashboard.php`, view `filament/pages/dashboard.blade.php`, `Services/ReportService.php` |
 | F3 | Sparepart + Tambah Stok | **Sudah** | `Filament/Resources/SparepartResource.php`, `Services/StockService.php` |
 | F4 | Mekanik | **Sudah** | `Filament/Resources/MechanicResource.php`, `Services/MechanicService.php` |
 | F5 | Pelanggan & kendaraan + riwayat | **Sudah** | `CustomerResource` (+ kendaraan), `VehicleResource` (detail + riwayat servis) |
@@ -97,7 +97,7 @@ Sesuai `ATURAN_PROJECT.md`, kalau kode berbeda dengan docs, kode yang diikuti.
 1. Audit project & dokumen → bagian 1.
 2. Backend: enums, 4 migration baru, 8 model, 6 service, 8 policy, factories, seeder demo 6 bulan.
 3. UI: tema kustom (sidebar gelap, kartu, badge), 7 resource, 5 halaman kustom, login split, tampilan HP mekanik, nota, 403/404/419/500.
-4. Dashboard & laporan: 4 widget, laporan pendapatan/servis/sirkulasi stok + cetak.
+4. Dashboard & laporan: dashboard kustom (pendapatan bulan ini, grafik 6 bulan, ringkasan, mekanik, stok menipis), laporan pendapatan/servis/sirkulasi stok + cetak.
 5. QA: 7 file feature test (± 40 skenario) sesuai ARCHITECTURE §8.
 6. Review: otorisasi server per peran, aturan bisnis, validasi, teks Indonesia, tidak ada `dd()`/`dump()`.
 
@@ -158,3 +158,18 @@ Pemilik tidak bisa mengubah data apa pun: dicek di `AuthAndAccessTest` (403 di s
 | IV.III — Terima Pembayaran & Cetak Nota | Satu use case | Dua use case: **Hitung & Terima Pembayaran** dan **Cetak Nota Transaksi**. |
 | IV.III — Lihat Dashboard & Cetak Laporan | "mengekspor laporan" | "mencetak / menyimpan PDF laporan". |
 | (Baru) Bab teknologi / implementasi | Belum ada | Tambahkan: Laravel 12, Filament 3, Tailwind CSS, MySQL. Keamanan: password di-hash, CSRF, validasi server, otorisasi per peran di server, transaksi database untuk stok & pembayaran. |
+
+---
+
+## 9. Tampilan baru "Gading & Perunggu" (13 Nov 2026)
+
+Dipilih dari rancangan visual (4 pilihan tema dibandingkan langsung). Hanya tampilan yang berubah; logika, Service, Policy, dan tes tidak disentuh.
+
+| Bagian | Isi |
+|---|---|
+| Warna & font | Latar gading `#F7F5F0`, kartu putih, aksen perunggu `#8C5A2B` (tombol), netral Stone, font Inter. Halaman cetak & error ikut warna yang sama. |
+| Panel | Sidebar & topbar transparan berkaca (blur), sidebar selalu terbuka dengan nama menu, logo ikon + nama bengkel. |
+| Pindah halaman | Mode SPA Filament (`->spa()`): tanpa reload. Nota & cetak laporan dikecualikan (`spaUrlExceptions`). |
+| Animasi | Isi halaman naik berurutan, kartu terangkat saat disorot, tombol mengempis saat ditekan, modal muncul dengan latar blur. Mati otomatis jika OS diset "kurangi gerakan". |
+| Dashboard | Ditata ulang: sapaan sesuai jam, pendapatan bulan ini (angka berjalan), grafik batang 6 bulan, 4 kartu ringkas, daftar mekanik + status, stok yang perlu dibeli. Widget bawaan Filament dihapus. |
+| Pembayaran | Tiap Work Order tampil sebagai kartu, ringkasan "menunggu" & "masuk hari ini", modal bayar dengan pilihan cepat biaya jasa dan tombol metode Tunai/Non-tunai. |

@@ -1,43 +1,30 @@
-{{-- Rincian sparepart di modal Proses Bayar (Kasir). Harga = harga terkunci saat mekanik mencatat. --}}
+{{-- Rincian di modal bayar (Kasir). Harga = harga terkunci saat mekanik mencatat. --}}
 @php($items = $workOrder->items)
 
-<div class="space-y-3">
-    <div class="rounded-lg bg-gray-50 p-3 text-sm">
-        <span class="block text-xs font-semibold text-gray-500">Pekerjaan</span>
-        <span class="text-gray-950">{{ $workOrder->work_notes ?: '–' }}</span>
-        <span class="mt-1 block text-xs text-gray-500">Dikerjakan {{ $workOrder->mechanic?->name }}</span>
+<div class="bk-soft flex flex-col gap-2.5 rounded-2xl px-4 py-4 text-sm">
+    <div>
+        <p class="font-semibold text-gray-950">{{ $workOrder->work_notes ?: 'Catatan pekerjaan kosong' }}</p>
+        <p class="bk-muted mt-0.5 text-xs">Dikerjakan {{ $workOrder->mechanic?->name ?? '–' }}</p>
     </div>
 
     @if ($items->isEmpty())
-        <p class="text-sm text-gray-500">Tidak ada sparepart terpakai. Total hanya biaya jasa.</p>
+        <p class="bk-muted">Tidak ada sparepart terpakai. Total hanya biaya jasa.</p>
     @else
-        <div class="overflow-x-auto rounded-lg ring-1 ring-gray-200">
-            <table class="w-full min-w-[420px] text-sm">
-                <thead class="bg-gray-50 text-left text-xs font-semibold text-gray-500">
-                    <tr>
-                        <th class="px-3 py-2">Sparepart</th>
-                        <th class="px-3 py-2 text-right">Jumlah</th>
-                        <th class="px-3 py-2 text-right">Harga</th>
-                        <th class="px-3 py-2 text-right">Subtotal</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100 tabular-nums">
-                    @foreach ($items as $item)
-                        <tr>
-                            <td class="px-3 py-2 font-semibold text-gray-950">{{ $item->sparepart?->name }}</td>
-                            <td class="px-3 py-2 text-right">{{ $item->qty }}</td>
-                            <td class="px-3 py-2 text-right">{{ \App\Support\Format::rupiah($item->unit_price) }}</td>
-                            <td class="px-3 py-2 text-right">{{ \App\Support\Format::rupiah($item->subtotal) }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr class="border-t border-gray-200 bg-gray-50">
-                        <td colspan="3" class="px-3 py-2 font-semibold">Subtotal sparepart</td>
-                        <td class="px-3 py-2 text-right font-bold tabular-nums">{{ \App\Support\Format::rupiah($items->sum('subtotal')) }}</td>
-                    </tr>
-                </tfoot>
-            </table>
+        <div class="flex flex-col gap-1.5 tabular-nums">
+            @foreach ($items as $item)
+                <div class="flex items-baseline justify-between gap-3">
+                    <span class="min-w-0 text-gray-950">
+                        {{ $item->sparepart?->name }}
+                        <span class="bk-muted">× {{ $item->qty }} @ {{ \App\Support\Format::rupiah($item->unit_price) }}</span>
+                    </span>
+                    <span class="shrink-0 text-gray-950">{{ \App\Support\Format::rupiah($item->subtotal) }}</span>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="flex items-baseline justify-between gap-3 border-t border-gray-950/10 pt-2.5 font-semibold text-gray-950">
+            <span>Subtotal sparepart</span>
+            <span class="tabular-nums">{{ \App\Support\Format::rupiah($items->sum('subtotal')) }}</span>
         </div>
     @endif
 </div>

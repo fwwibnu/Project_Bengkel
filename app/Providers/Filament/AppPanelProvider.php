@@ -1,7 +1,7 @@
 <?php
-
+ 
 namespace App\Providers\Filament;
-
+ 
 use App\Filament\Pages\Auth\Login;
 use App\Support\RoleHome;
 use Filament\Http\Middleware\Authenticate;
@@ -19,7 +19,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
-
+ 
 class AppPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -28,33 +28,35 @@ class AppPanelProvider extends PanelProvider
             ->default()
             ->id('app')
             ->path('app')
-
+ 
             // Halaman login kustom: username (atau email) + password
             ->login(Login::class)
-
-            // Identitas bengkel di sidebar dan judul tab browser (config/bengkel.php)
+ 
+            // Identitas bengkel: logo + nama di sidebar, topbar HP, dan halaman login
             ->brandName(config('bengkel.nama'))
-
+            ->brandLogo(fn (): View => view('filament.brand-logo'))
+            ->brandLogoHeight('2.5rem')
+ 
             // Klik logo → halaman awal sesuai peran
             ->homeUrl(fn (): string => RoleHome::url(auth()->user()))
-
-            // Palet warna (UI_GUIDE). Primary digeser satu tingkat supaya tombol = #C2410C
-            // (kontras teks putih cukup), hover = #EA580C.
+ 
+            // Tema "Gading & Perunggu": aksen perunggu #8C5A2B (tombol = primary-600,
+            // kontras teks putih ±6:1), netral abu hangat (Stone).
             ->colors([
                 'primary' => [
-                    50 => '255, 247, 237',
-                    100 => '255, 237, 213',
-                    200 => '254, 215, 170',
-                    300 => '253, 186, 116',
-                    400 => '249, 115, 22',
-                    500 => '234, 88, 12',
-                    600 => '194, 65, 12',
-                    700 => '154, 52, 18',
-                    800 => '124, 45, 18',
-                    900 => '67, 20, 7',
-                    950 => '45, 13, 4',
+                    50 => '250, 245, 238',
+                    100 => '243, 232, 217',
+                    200 => '230, 208, 180',
+                    300 => '214, 178, 138',
+                    400 => '190, 140, 92',
+                    500 => '166, 110, 60',
+                    600 => '140, 90, 43',
+                    700 => '115, 72, 31',
+                    800 => '92, 58, 27',
+                    900 => '66, 42, 20',
+                    950 => '40, 25, 12',
                 ],
-                'gray' => Color::Slate,       // warna netral
+                'gray' => Color::Stone,       // netral hangat
                 'success' => Color::Green,    // Tersedia, Selesai, berhasil
                 'warning' => Color::Amber,    // Sibuk, Sedang Dikerjakan, stok menipis
                 'danger' => Color::Red,       // stok habis, hapus, gagal
@@ -62,18 +64,27 @@ class AppPanelProvider extends PanelProvider
                 'teal' => Color::Teal,        // badge peran Kasir
                 'purple' => Color::Purple,    // badge peran Pemilik
             ])
-
-            // Satu keluarga font untuk seluruh panel
-            ->font('Plus Jakarta Sans')
-
-            // Tema kustom (Tailwind v3): sidebar gelap, kartu, badge, tabel
+ 
+            ->font('Inter')
+ 
+            // Tema kustom (Tailwind v3): warna, kaca, kartu, animasi
             ->viteTheme('resources/css/filament/app/theme.css')
-
-            // Tampilan terang saja, sesuai desain yang disetujui
+ 
+            // Tampilan terang saja
             ->darkMode(false)
-
+ 
+            // Sidebar ramping, bisa diciutkan jadi ikon saja (pilihan diingat browser)
+            ->sidebarWidth('16rem')
             ->sidebarCollapsibleOnDesktop()
-
+ 
+            // Pindah halaman tanpa reload (terasa seperti aplikasi).
+            // Halaman nota & cetak laporan punya tampilan cetak sendiri, jadi dibuka normal.
+            ->spa()
+            ->spaUrlExceptions([
+                '*/nota/*',
+                '*/laporan/cetak*',
+            ])
+ 
             // Urutan grup menu (tiap peran hanya melihat menu miliknya)
             ->navigationGroups([
                 'Operasional',
@@ -81,23 +92,22 @@ class AppPanelProvider extends PanelProvider
                 'Data Master',
                 'Laporan',
             ])
-
+ 
             // Nama + badge peran pengguna di kanan atas, sebelum avatar
             ->renderHook(
                 PanelsRenderHook::USER_MENU_BEFORE,
                 fn (): View => view('filament.user-info'),
             )
-
-            // Panel brand gelap di sisi kiri halaman login (layar lebar)
+ 
+            // Panel brand di sisi kiri halaman login (layar lebar)
             ->renderHook(
                 PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE,
                 fn (): View => view('filament.login-brand'),
             )
-
+ 
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([])
-            ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([])
             ->middleware([
                 EncryptCookies::class,
@@ -115,3 +125,4 @@ class AppPanelProvider extends PanelProvider
             ]);
     }
 }
+ 

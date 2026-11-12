@@ -1,7 +1,7 @@
 # Sistem Informasi Pengelolaan Bengkel
 
 Tugas kelompok 1 — Pemrograman Berbasis Web, Universitas Pancasila.
-Laravel 12 · Filament 3 · Tailwind CSS 3 · MySQL (Laragon).
+Laravel 12 · Filament 3 · Tailwind CSS 3 · MySQL (Laragon). Tema tampilan: Gading & Perunggu.
 
 ## Kebutuhan
 
@@ -68,7 +68,6 @@ app/
   Filament/
     Resources/    Work Order, Pelanggan, Kendaraan, Sparepart, Mekanik, Akun Pengguna, Riwayat Transaksi
     Pages/        Dashboard, Work Order Saya (mekanik), Pembayaran, Riwayat Servis, Laporan, Login
-    Widgets/      kartu statistik, grafik pendapatan, performa mekanik, stok menipis
   Http/Controllers/  NotaController, LaporanController (halaman cetak)
 resources/views/
   filament/       tampilan halaman kustom panel

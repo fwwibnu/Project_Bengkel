@@ -1,10 +1,14 @@
-DAFTAR FILE YANG HARUS DIHAPUS DARI FOLDER PROJECT
-==================================================
+DAFTAR FILE YANG HARUS DIHAPUS DARI FOLDER PROJECT (update tampilan 13 Nov 2026)
+================================================================================
 
-Tidak ada file wajib yang perlu dihapus. Semua file di zip ini cukup ditimpa ke folder project.
+WAJIB dihapus (widget dashboard lama, sudah diganti tampilan dashboard baru):
+- app/Filament/Widgets/LowStockTable.php
+- app/Filament/Widgets/MechanicPerformanceChart.php
+- app/Filament/Widgets/RevenueChart.php
+- app/Filament/Widgets/StatsOverview.php
+(folder app/Filament/Widgets boleh ikut dihapus setelah kosong)
 
-Opsional (aman dihapus, sudah tidak dipakai):
-- database/database.sqlite          (sisa bawaan Laravel saat masih pakai SQLite; project memakai MySQL)
-- resources/views/welcome.blade.php (kalau masih ada; halaman "/" sekarang langsung ke login)
+Perintah sekali jalan (Command Prompt, di folder project):
+rmdir /s /q app\Filament\Widgets
 
 Catatan: file ini sendiri (HAPUS_FILE.txt) boleh dihapus setelah dibaca.

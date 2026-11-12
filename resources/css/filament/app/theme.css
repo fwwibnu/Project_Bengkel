@@ -3,137 +3,231 @@
 @config 'tailwind.config.js';
 
 /*
- | Tema "Maju Jaya Motor" (UI_GUIDE.md)
- | - Sidebar gelap #0F172A, item aktif #1E293B, teks #CBD5E1, ikon aktif oranye
- | - Latar halaman #F8FAFC, kartu putih, garis #E2E8F0, radius kartu 12px
- | - Badge rounded-full, angka tabel tabular-nums
+ | Tema "Gading & Perunggu" — Maju Jaya Motor
+ | - Latar gading hangat, kartu putih, satu aksen perunggu (dipakai seperlunya)
+ | - Sidebar & topbar transparan berkaca (blur)
+ | - Animasi halus: isi halaman naik pelan, kartu terangkat saat disorot,
+ |   tombol mengempis saat ditekan, modal muncul seperti panel.
+ | - Semua animasi mati otomatis kalau pengguna memilih "kurangi gerakan" di OS.
  */
 
 :root {
-    --bk-sidebar: #0f172a;
-    --bk-sidebar-active: #1e293b;
-    --bk-sidebar-text: #cbd5e1;
-    --bk-sidebar-muted: #94a3b8;
-    --bk-border: #e2e8f0;
-    --bk-page: #f8fafc;
+    --bk-bg: #f7f5f0;
+    --bk-card: #ffffff;
+    --bk-card-2: #f1eee7;
+    --bk-text: #1c1b19;
+    --bk-muted: #6b665e;
+    --bk-line: rgb(28 27 25 / 0.08);
+    --bk-track: #e3ddd1;
+    --bk-accent: #8c5a2b;
+    --bk-accent-hover: #73481f;
+    --bk-accent-soft: rgb(140 90 43 / 0.1);
+    --bk-glass: rgb(247 245 240 / 0.78);
+    --bk-side: rgb(255 253 248 / 0.72);
+    --bk-shadow: rgb(60 40 20 / 0.22);
+    --bk-ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ---------- Halaman ---------- */
+/* ================================================================
+ | Dasar
+ |================================================================*/
 .fi-body {
-    background-color: var(--bk-page);
+    background-color: var(--bk-bg);
+    color: var(--bk-text);
+    -webkit-font-smoothing: antialiased;
 }
 
-/* ---------- Sidebar gelap ---------- */
-.fi-sidebar {
-    background-color: var(--bk-sidebar) !important;
+::selection {
+    background-color: rgb(140 90 43 / 0.2);
 }
 
-.fi-sidebar-header {
-    background-color: var(--bk-sidebar) !important;
-    box-shadow: none !important;
-    --tw-ring-color: transparent !important;
-    border-bottom: 1px solid rgb(255 255 255 / 0.06);
+/* Bilah progres saat pindah halaman (mode SPA) */
+#nprogress .bar {
+    background: var(--bk-accent) !important;
 }
 
-.fi-sidebar .fi-logo,
-.fi-sidebar-header .fi-logo {
+/* ================================================================
+ | Logo
+ |================================================================*/
+.bk-brand-mark {
+    background-color: var(--bk-accent);
     color: #ffffff;
-    font-weight: 700;
+}
+
+.bk-brand-name {
+    color: var(--bk-text);
     letter-spacing: -0.01em;
 }
 
-.fi-sidebar-header button,
-.fi-sidebar-header .fi-icon-btn {
-    color: var(--bk-sidebar-muted);
+.bk-brand-sub {
+    color: var(--bk-muted);
+}
+
+/* ================================================================
+ | Sidebar berkaca
+ |================================================================*/
+.fi-sidebar {
+    background-color: var(--bk-side) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    border-inline-end: 1px solid var(--bk-line);
+}
+
+.fi-sidebar-header {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+}
+
+.fi-sidebar-nav {
+    padding-top: 0.5rem;
 }
 
 .fi-sidebar-group-label {
-    color: var(--bk-sidebar-muted) !important;
+    color: var(--bk-muted) !important;
     font-size: 11px !important;
     font-weight: 600 !important;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
 
-.fi-sidebar-group-collapse-button,
-.fi-sidebar-group-button .fi-icon-btn,
-.fi-sidebar-group-icon {
-    color: var(--bk-sidebar-muted) !important;
+.fi-sidebar-nav-groups {
+    row-gap: 1.25rem !important;
+}
+
+.fi-sidebar-group {
+    row-gap: 0.25rem;
 }
 
 .fi-sidebar-item-button {
-    min-height: 44px;
+    min-height: 38px;
+    padding-top: 0.4rem !important;
+    padding-bottom: 0.4rem !important;
+    border-radius: 10px !important;
+    transition: background-color 0.25s var(--bk-ease), transform 0.18s var(--bk-ease);
 }
 
 .fi-sidebar-item-button:hover,
 .fi-sidebar-item-button:focus-visible {
-    background-color: rgb(255 255 255 / 0.05) !important;
+    background-color: rgb(28 27 25 / 0.05) !important;
+}
+
+.fi-sidebar-item-button:active {
+    transform: scale(0.98);
 }
 
 .fi-sidebar-item-label {
-    color: var(--bk-sidebar-text) !important;
+    color: var(--bk-text) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500;
 }
 
 .fi-sidebar-item-icon {
-    color: var(--bk-sidebar-muted) !important;
+    width: 1.25rem !important;
+    height: 1.25rem !important;
+}
+
+/* Logo sedikit lebih kecil di sidebar */
+.fi-sidebar-header .bk-brand-mark {
+    width: 2rem;
+    height: 2rem;
+}
+
+.fi-sidebar-header .bk-brand-name {
+    font-size: 14px;
+}
+
+.fi-sidebar-item-icon {
+    color: var(--bk-muted) !important;
 }
 
 .fi-sidebar-item-active .fi-sidebar-item-button,
 .fi-sidebar-item.fi-active .fi-sidebar-item-button {
-    background-color: var(--bk-sidebar-active) !important;
+    background-color: var(--bk-accent-soft) !important;
 }
 
 .fi-sidebar-item-active .fi-sidebar-item-label,
-.fi-sidebar-item.fi-active .fi-sidebar-item-label {
-    color: #ffffff !important;
+.fi-sidebar-item.fi-active .fi-sidebar-item-label,
+.fi-sidebar-item-active .fi-sidebar-item-icon,
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    color: var(--bk-accent) !important;
     font-weight: 600;
 }
 
-.fi-sidebar-item-active .fi-sidebar-item-icon,
-.fi-sidebar-item.fi-active .fi-sidebar-item-icon {
-    color: #fb923c !important;
+/* ================================================================
+ | Topbar berkaca
+ |================================================================*/
+.fi-topbar>nav {
+    background-color: var(--bk-glass) !important;
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    border-bottom: 1px solid var(--bk-line);
 }
 
-.fi-sidebar .fi-badge {
-    --tw-ring-color: transparent;
-}
-
-/* ---------- Topbar ---------- */
-.fi-topbar > nav {
+.fi-topbar .fi-global-search-field .fi-input-wrp {
+    background-color: rgb(28 27 25 / 0.05);
     box-shadow: none;
-    border-bottom: 1px solid var(--bk-border);
     --tw-ring-color: transparent;
+    border-radius: 12px;
 }
 
-/* ---------- Header halaman ---------- */
+/* ================================================================
+ | Judul halaman: besar, rapat, tegas
+ |================================================================*/
 .fi-header-heading {
+    font-size: clamp(1.875rem, 3.2vw, 2.75rem) !important;
+    line-height: 1.08 !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.035em;
+    color: var(--bk-text);
+}
+
+.fi-header-subheading {
+    font-size: 1.0625rem !important;
+    color: var(--bk-muted) !important;
+    letter-spacing: -0.01em;
+    margin-top: 0.5rem;
+}
+
+.fi-breadcrumbs a,
+.fi-breadcrumbs span {
+    color: var(--bk-muted);
+}
+
+/* ================================================================
+ | Kartu: section, tabel, tab, form
+ |================================================================*/
+.fi-section,
+.fi-ta-ctn,
+.fi-fo-tabs,
+.fi-in-tabs,
+.fi-wi-stats-overview-stat {
+    border-radius: 20px !important;
+    box-shadow: none !important;
+    --tw-ring-color: var(--bk-line) !important;
+}
+
+.fi-section-header-heading {
     font-weight: 700;
     letter-spacing: -0.02em;
 }
 
-.fi-header-subheading {
-    color: #475569;
-}
-
-/* ---------- Kartu: section, tabel, widget ---------- */
-.fi-section,
-.fi-ta-ctn,
-.fi-wi-stats-overview-stat,
-.fi-wi-chart .fi-section,
-.fi-fo-tabs,
-.fi-in-tabs {
-    box-shadow: none !important;
-    --tw-ring-color: var(--bk-border) !important;
-    border-radius: 12px;
-}
-
-.fi-wi-stats-overview-stat-value {
-    letter-spacing: -0.02em;
-}
-
-/* Header tabel abu muda, angka rapi */
+/* Tabel: kepala tabel tipis, baris lega, sorot halus */
 .fi-ta-header-cell {
-    background-color: #f8fafc;
+    background-color: transparent !important;
+}
+
+.fi-ta-header-cell-label,
+.fi-ta-header-cell button span {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--bk-muted);
+}
+
+.fi-ta-table thead tr {
+    background-color: var(--bk-card-2);
 }
 
 .fi-ta-table td,
@@ -141,25 +235,236 @@
     font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Badge rounded-full (status) ---------- */
+.fi-ta-row {
+    transition: background-color 0.3s var(--bk-ease);
+}
+
+.fi-ta-row:hover {
+    background-color: #fbf9f5 !important;
+}
+
+.fi-pagination-records-per-page-select .fi-input-wrp,
+.fi-ta-search-field .fi-input-wrp {
+    border-radius: 12px;
+}
+
+/* ================================================================
+ | Tombol: pil, mengempis saat ditekan
+ |================================================================*/
+.fi-btn {
+    border-radius: 9999px !important;
+    font-weight: 600;
+    transition: transform 0.18s var(--bk-ease), background-color 0.25s var(--bk-ease), box-shadow 0.3s var(--bk-ease);
+}
+
+.fi-btn:active,
+.fi-icon-btn:active,
+.fi-link:active {
+    transform: scale(0.96);
+}
+
+.fi-icon-btn {
+    transition: transform 0.18s var(--bk-ease), background-color 0.25s var(--bk-ease);
+}
+
+/* Input: sudut lebih bulat */
+.fi-input-wrp {
+    border-radius: 12px !important;
+    transition: box-shadow 0.25s var(--bk-ease);
+}
+
+/* Pilihan berupa tombol (metode bayar, pilihan cepat) */
+.fi-fo-toggle-buttons .fi-btn {
+    border-radius: 9999px !important;
+}
+
+/* ================================================================
+ | Badge
+ |================================================================*/
 .fi-badge {
     border-radius: 9999px !important;
     font-weight: 600;
 }
 
-/* ---------- Tombol & input: elemen yang bisa diklik minimal 44px di layar sentuh ---------- */
-@media (pointer: coarse) {
-    .fi-btn,
-    .fi-input-wrp {
-        min-height: 44px;
+/* ================================================================
+ | Modal: latar blur, panel muncul naik
+ |================================================================*/
+.fi-modal-close-overlay {
+    background-color: rgb(28 27 25 / 0.35) !important;
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+}
+
+.fi-modal-window {
+    border-radius: 28px !important;
+    box-shadow: 0 40px 80px -24px rgb(0 0 0 / 0.35) !important;
+    animation: bk-sheet 0.55s var(--bk-ease) backwards;
+}
+
+.fi-modal-heading {
+    font-size: 1.375rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.025em;
+}
+
+/* Dropdown (menu pengguna, filter) */
+.fi-dropdown-panel {
+    border-radius: 16px !important;
+    box-shadow: 0 24px 48px -16px rgb(60 40 20 / 0.25) !important;
+}
+
+/* Notifikasi toast */
+.fi-no-notification {
+    border-radius: 18px !important;
+    box-shadow: 0 24px 48px -20px rgb(60 40 20 / 0.3) !important;
+}
+
+/* ================================================================
+ | Animasi masuk halaman: tiap blok naik pelan berurutan.
+ | Dipicu setiap kali halaman dibuka (termasuk pindah menu tanpa reload).
+ |================================================================*/
+@keyframes bk-rise {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
     }
 }
 
-/* ---------- Komponen buatan sendiri ---------- */
+@keyframes bk-sheet {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@keyframes bk-grow {
+    from {
+        transform: scaleY(0);
+    }
+
+    to {
+        transform: scaleY(1);
+    }
+}
+
+@keyframes bk-fill {
+    from {
+        width: 0;
+    }
+}
+
+@keyframes bk-pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgb(22 163 74 / 0.5);
+    }
+
+    70% {
+        box-shadow: 0 0 0 9px rgb(22 163 74 / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgb(22 163 74 / 0);
+    }
+}
+
+.fi-page>section>* {
+    animation: bk-rise 0.8s var(--bk-ease) backwards;
+}
+
+.fi-page:not(:has(> section)) {
+    animation: bk-rise 0.8s var(--bk-ease) backwards;
+}
+
+.fi-page>section>*:nth-child(2) {
+    animation-delay: 80ms;
+}
+
+.fi-page>section>*:nth-child(3) {
+    animation-delay: 160ms;
+}
+
+.fi-page>section>*:nth-child(n + 4) {
+    animation-delay: 240ms;
+}
+
+/* Blok buatan sendiri dengan jeda masing-masing (style="animation-delay: …") */
+.bk-rise {
+    animation: bk-rise 0.9s var(--bk-ease) backwards;
+}
+
+.bk-bar {
+    transform-origin: bottom;
+    animation: bk-grow 1.1s var(--bk-ease) backwards;
+}
+
+.bk-fill {
+    animation: bk-fill 1.4s var(--bk-ease) backwards;
+}
+
+.bk-pulse {
+    animation: bk-pulse 2s infinite;
+}
+
+/* Kartu yang terangkat saat disorot (hanya kartu tanpa form di dalamnya) */
+.bk-lift,
+button.bk-card,
+a.bk-card {
+    transition: transform 0.45s var(--bk-ease), box-shadow 0.45s var(--bk-ease);
+}
+
+.bk-lift:hover,
+button.bk-card:hover,
+a.bk-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 24px 48px -24px var(--bk-shadow);
+}
+
+/* Grafik batang dashboard: nilai muncul saat disorot */
+.bk-bar-col .bk-bar-tip {
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.3s var(--bk-ease), transform 0.3s var(--bk-ease);
+}
+
+.bk-bar-col:hover .bk-bar-tip,
+.bk-bar-col:focus-within .bk-bar-tip {
+    opacity: 1;
+    transform: none;
+}
+
+/* ================================================================
+ | Komponen buatan sendiri
+ |================================================================*/
 .bk-card {
-    border-radius: 12px;
-    background-color: #ffffff;
-    box-shadow: 0 0 0 1px var(--bk-border);
+    border-radius: 20px;
+    background-color: var(--bk-card);
+    box-shadow: 0 0 0 1px var(--bk-line);
+}
+
+.bk-muted {
+    color: var(--bk-muted);
+}
+
+.bk-accent {
+    color: var(--bk-accent);
+}
+
+.bk-track {
+    background-color: var(--bk-track);
+}
+
+.bk-soft {
+    background-color: var(--bk-card-2);
 }
 
 .bk-pill {
@@ -174,14 +479,121 @@
 }
 
 .bk-pill-baru,
-.bk-pill-mv-batal { background-color: #e0f2fe; color: #075985; }
-.bk-pill-dikerjakan { background-color: #fef3c7; color: #92400e; }
-.bk-pill-selesai,
-.bk-pill-mv-masuk { background-color: #dcfce7; color: #166534; }
-.bk-pill-dibayar { background-color: #e2e8f0; color: #334155; }
-.bk-pill-mv-keluar { background-color: #f1f5f9; color: #334155; }
+.bk-pill-mv-batal {
+    background-color: #e0f2fe;
+    color: #075985;
+}
 
-/* ---------- Halaman login: panel brand gelap di kiri (layar lebar) ---------- */
+.bk-pill-dikerjakan {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.bk-pill-selesai,
+.bk-pill-mv-masuk {
+    background-color: #dcfce7;
+    color: #166534;
+}
+
+.bk-pill-dibayar {
+    background-color: #e7e5e4;
+    color: #44403c;
+}
+
+.bk-pill-mv-keluar {
+    background-color: #f5f5f4;
+    color: #44403c;
+}
+
+/* Halaman Pembayaran: tiap Work Order tampil sebagai kartu terpisah.
+   Semua pembungkus record dibuat transparan & tanpa garis pemisah. */
+.bk-bayar .fi-ta-ctn,
+.bk-bayar .fi-ta-content,
+.bk-bayar .fi-ta-content div:has(> .fi-ta-record) {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    border: 0 !important;
+}
+
+.bk-bayar .fi-ta-header-toolbar {
+    padding-inline: 0;
+    border: 0 !important;
+}
+
+.bk-bayar .fi-ta-record {
+    border: 0 !important;
+    border-radius: 24px;
+    background-color: var(--bk-card) !important;
+    box-shadow: 0 0 0 1px var(--bk-line);
+    margin: 0 !important;
+    padding: 0.5rem 0.75rem;
+    transition: transform 0.45s var(--bk-ease), box-shadow 0.45s var(--bk-ease);
+    animation: bk-rise 0.8s var(--bk-ease) backwards;
+}
+
+/* Jarak antar kartu: dipasang di kartu berikutnya, apa pun pembungkusnya */
+.bk-bayar .fi-ta-content div:has(> .fi-ta-record)~div:has(> .fi-ta-record) {
+    margin-top: 14px !important;
+}
+
+.bk-bayar .fi-ta-content div:has(> .fi-ta-record) {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.bk-bayar .fi-ta-record:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 1px var(--bk-line), 0 24px 48px -24px var(--bk-shadow);
+}
+
+.bk-bayar .fi-ta-record:nth-child(2) {
+    animation-delay: 70ms;
+}
+
+.bk-bayar .fi-ta-record:nth-child(3) {
+    animation-delay: 140ms;
+}
+
+.bk-bayar .fi-ta-record:nth-child(n + 4) {
+    animation-delay: 210ms;
+}
+
+/* Plat nomor besar (class dipasang di kolom, ukuran dipaksa ke teks di dalamnya) */
+.bk-bayar .bk-plate,
+.bk-bayar .bk-plate * {
+    font-size: 1.5rem !important;
+    line-height: 1.2 !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.03em;
+    color: var(--bk-text);
+}
+
+/* Total di modal bayar */
+.bk-total {
+    font-size: 2.25rem;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--bk-text);
+}
+
+/* ================================================================
+ | Elemen sentuh minimal 44px di layar sentuh
+ |================================================================*/
+@media (pointer: coarse) {
+
+    .fi-btn,
+    .fi-input-wrp {
+        min-height: 44px;
+    }
+}
+
+/* ================================================================
+ | Halaman login: panel brand gelap hangat di kiri (layar lebar)
+ |================================================================*/
 .bk-login-brand {
     display: none;
 }
@@ -200,20 +612,76 @@
         justify-content: space-between;
         gap: 3rem;
         padding: 3.5rem 3rem;
-        background-color: var(--bk-sidebar);
-        color: var(--bk-sidebar-text);
+        background-color: var(--bk-text);
+        color: #e7e2d8;
         z-index: 0;
     }
 }
 
-.fi-simple-main {
-    border-radius: 16px;
-    box-shadow: none !important;
-    --tw-ring-color: var(--bk-border) !important;
+.bk-login-muted {
+    color: #a39c90;
 }
 
-/* ---------- Cetak dari panel (jarang dipakai, halaman cetak punya layout sendiri) ---------- */
+.bk-login-title {
+    color: #f7f5f0;
+    letter-spacing: -0.035em;
+}
+
+.fi-simple-main {
+    border-radius: 28px !important;
+    box-shadow: 0 0 0 1px var(--bk-line) !important;
+}
+
+/*
+ | Animasi login dipasang di judul & form saja, BUKAN di kartu .fi-simple-main:
+ | panel brand (.bk-login-brand, position: fixed) ada di dalam kartu itu, dan
+ | transform pada kartu membuat panel ikut "terkurung" di kartu selama animasi.
+ */
+.fi-simple-main .fi-simple-header,
+.fi-simple-main form {
+    animation: bk-rise 0.8s var(--bk-ease) backwards;
+}
+
+.fi-simple-main form {
+    animation-delay: 90ms;
+}
+
+.fi-simple-header-heading {
+    font-weight: 800 !important;
+    letter-spacing: -0.03em;
+}
+
+/* ================================================================
+ | Kurangi gerakan (pengaturan OS)
+ |================================================================*/
+@media (prefers-reduced-motion: reduce) {
+
+    .fi-page>section>*,
+    .fi-page:not(:has(> section)),
+    .bk-rise,
+    .bk-bar,
+    .bk-fill,
+    .bk-pulse,
+    .bk-bayar .fi-ta-record,
+    .fi-modal-window,
+    .fi-simple-main .fi-simple-header,
+    .fi-simple-main form {
+        animation: none !important;
+    }
+
+    .bk-lift:hover,
+    button.bk-card:hover,
+    a.bk-card:hover,
+    .bk-bayar .fi-ta-record:hover {
+        transform: none;
+    }
+}
+
+/* ================================================================
+ | Cetak dari panel (halaman cetak punya layout sendiri)
+ |================================================================*/
 @media print {
+
     .fi-sidebar,
     .fi-topbar {
         display: none !important;

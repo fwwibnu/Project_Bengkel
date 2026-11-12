@@ -43,7 +43,7 @@
         </tbody>
         @if ($data['rows']->isNotEmpty())
             <tfoot>
-                <tr class="border-t-2 border-gray-300 bg-orange-50 font-bold text-gray-950 tabular-nums">
+                <tr class="border-t-2 border-gray-300 bg-bronze-50 font-bold text-gray-950 tabular-nums">
                     <td class="px-4 py-3">Total</td>
                     <td class="px-4 py-3 text-right">{{ $s['count'] }}</td>
                     <td class="px-4 py-3 text-right">{{ \App\Support\Format::rupiah($s['fee']) }}</td>

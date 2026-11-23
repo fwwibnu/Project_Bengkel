@@ -164,45 +164,26 @@ class WorkOrderResource extends Resource
 
     public static function table(Table $table): Table
     {
+        // Tiap Work Order tampil sebagai kartu (view: filament/tables/cards/work-order).
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['customer', 'vehicle', 'mechanic']))
+            ->modifyQueryUsing(fn (Builder $query) => $query
+                ->with(['customer', 'vehicle', 'mechanic', 'items.sparepart', 'payment'])
+                ->withSum('items as parts_total', 'subtotal'))
+            ->contentGrid(['md' => 2, 'xl' => 3])
             ->columns([
-                Tables\Columns\TextColumn::make('number')
-                    ->label('No. WO')
-                    ->searchable()
-                    ->sortable()
-                    ->weight(FontWeight::Bold)
-                    ->description(fn (WorkOrder $record): string => Format::tanggalJam($record->created_at)),
-
-                Tables\Columns\TextColumn::make('customer.name')
-                    ->label('Pelanggan')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('vehicle.plate_number')
-                    ->label('Kendaraan')
-                    ->searchable()
-                    ->weight(FontWeight::SemiBold)
-                    ->description(fn (WorkOrder $record): string => trim(($record->vehicle?->brand ?? '').' '.($record->vehicle?->model ?? ''))),
-
-                Tables\Columns\TextColumn::make('complaint')
-                    ->label('Keluhan')
-                    ->limit(40)
-                    ->tooltip(fn (WorkOrder $record): string => $record->complaint)
-                    ->color('gray'),
-
-                Tables\Columns\TextColumn::make('mechanic.name')
-                    ->label('Mekanik'),
-
-                Tables\Columns\TextColumn::make('status')
-                    ->label('Status')
-                    ->badge(),
-
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label('Dibuat')
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true)
-                    ->formatStateUsing(fn ($state): string => Format::tanggalJam($state)),
+                // Dibungkus Stack supaya tabel memakai mode kartu (contentGrid)
+                Tables\Columns\Layout\Stack::make([
+                Tables\Columns\ViewColumn::make('kartu')
+                    ->label('Work Order')
+                    ->view('filament.tables.cards.work-order')
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->where(fn (Builder $q) => $q
+                        ->where('number', 'like', "%{$search}%")
+                        ->orWhere('complaint', 'like', "%{$search}%")
+                        ->orWhereHas('vehicle', fn (Builder $v) => $v->where('plate_number', 'like', "%{$search}%"))
+                        ->orWhereHas('customer', fn (Builder $c) => $c->where('name', 'like', "%{$search}%")))),
+                ]),
             ])
+            ->searchPlaceholder('Cari plat, WO, pelanggan')
             ->defaultSort('created_at', 'desc')
             ->filters([
                 Tables\Filters\SelectFilter::make('mechanic_id')
@@ -210,13 +191,12 @@ class WorkOrderResource extends Resource
                     ->relationship('mechanic', 'name'),
             ])
             ->recordUrl(fn (WorkOrder $record): string => static::getUrl('view', ['record' => $record]))
-            ->actions([
-                Tables\Actions\ViewAction::make()->label('Lihat'),
-            ])
+            ->actions([])
             ->bulkActions([])
+            ->paginated([12, 24, 48])
             ->emptyStateIcon('heroicon-o-clipboard-document-list')
-            ->emptyStateHeading('Belum ada Work Order')
-            ->emptyStateDescription('Buat Work Order saat ada kendaraan masuk untuk diservis.');
+            ->emptyStateHeading('Tidak ada Work Order')
+            ->emptyStateDescription('Belum ada Work Order di status ini, atau coba kata pencarian lain.');
     }
 
     /* ---------------------------------------------------------------

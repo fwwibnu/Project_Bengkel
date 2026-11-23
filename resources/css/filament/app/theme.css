@@ -157,7 +157,7 @@
 /* ================================================================
  | Topbar berkaca
  |================================================================*/
-.fi-topbar>nav {
+.fi-topbar > nav {
     background-color: var(--bk-glass) !important;
     -webkit-backdrop-filter: saturate(180%) blur(20px);
     backdrop-filter: saturate(180%) blur(20px);
@@ -328,7 +328,6 @@
         opacity: 0;
         transform: translateY(18px);
     }
-
     to {
         opacity: 1;
         transform: none;
@@ -340,7 +339,6 @@
         opacity: 0;
         transform: translateY(40px) scale(0.96);
     }
-
     to {
         opacity: 1;
         transform: none;
@@ -351,7 +349,6 @@
     from {
         transform: scaleY(0);
     }
-
     to {
         transform: scaleY(1);
     }
@@ -367,17 +364,15 @@
     0% {
         box-shadow: 0 0 0 0 rgb(22 163 74 / 0.5);
     }
-
     70% {
         box-shadow: 0 0 0 9px rgb(22 163 74 / 0);
     }
-
     100% {
         box-shadow: 0 0 0 0 rgb(22 163 74 / 0);
     }
 }
 
-.fi-page>section>* {
+.fi-page > section > * {
     animation: bk-rise 0.8s var(--bk-ease) backwards;
 }
 
@@ -385,15 +380,15 @@
     animation: bk-rise 0.8s var(--bk-ease) backwards;
 }
 
-.fi-page>section>*:nth-child(2) {
+.fi-page > section > *:nth-child(2) {
     animation-delay: 80ms;
 }
 
-.fi-page>section>*:nth-child(3) {
+.fi-page > section > *:nth-child(3) {
     animation-delay: 160ms;
 }
 
-.fi-page>section>*:nth-child(n + 4) {
+.fi-page > section > *:nth-child(n + 4) {
     animation-delay: 240ms;
 }
 
@@ -479,31 +474,12 @@ a.bk-card:hover {
 }
 
 .bk-pill-baru,
-.bk-pill-mv-batal {
-    background-color: #e0f2fe;
-    color: #075985;
-}
-
-.bk-pill-dikerjakan {
-    background-color: #fef3c7;
-    color: #92400e;
-}
-
+.bk-pill-mv-batal { background-color: #e0f2fe; color: #075985; }
+.bk-pill-dikerjakan { background-color: #fef3c7; color: #92400e; }
 .bk-pill-selesai,
-.bk-pill-mv-masuk {
-    background-color: #dcfce7;
-    color: #166534;
-}
-
-.bk-pill-dibayar {
-    background-color: #e7e5e4;
-    color: #44403c;
-}
-
-.bk-pill-mv-keluar {
-    background-color: #f5f5f4;
-    color: #44403c;
-}
+.bk-pill-mv-masuk { background-color: #dcfce7; color: #166534; }
+.bk-pill-dibayar { background-color: #e7e5e4; color: #44403c; }
+.bk-pill-mv-keluar { background-color: #f5f5f4; color: #44403c; }
 
 /* Halaman Pembayaran: tiap Work Order tampil sebagai kartu terpisah.
    Semua pembungkus record dibuat transparan & tanpa garis pemisah. */
@@ -533,7 +509,7 @@ a.bk-card:hover {
 }
 
 /* Jarak antar kartu: dipasang di kartu berikutnya, apa pun pembungkusnya */
-.bk-bayar .fi-ta-content div:has(> .fi-ta-record)~div:has(> .fi-ta-record) {
+.bk-bayar .fi-ta-content div:has(> .fi-ta-record) ~ div:has(> .fi-ta-record) {
     margin-top: 14px !important;
 }
 
@@ -548,17 +524,9 @@ a.bk-card:hover {
     box-shadow: 0 0 0 1px var(--bk-line), 0 24px 48px -24px var(--bk-shadow);
 }
 
-.bk-bayar .fi-ta-record:nth-child(2) {
-    animation-delay: 70ms;
-}
-
-.bk-bayar .fi-ta-record:nth-child(3) {
-    animation-delay: 140ms;
-}
-
-.bk-bayar .fi-ta-record:nth-child(n + 4) {
-    animation-delay: 210ms;
-}
+.bk-bayar .fi-ta-record:nth-child(2) { animation-delay: 70ms; }
+.bk-bayar .fi-ta-record:nth-child(3) { animation-delay: 140ms; }
+.bk-bayar .fi-ta-record:nth-child(n + 4) { animation-delay: 210ms; }
 
 /* Plat nomor besar (class dipasang di kolom, ukuran dipaksa ke teks di dalamnya) */
 .bk-bayar .bk-plate,
@@ -568,6 +536,145 @@ a.bk-card:hover {
     font-weight: 800 !important;
     letter-spacing: -0.03em;
     color: var(--bk-text);
+}
+
+/* ================================================================
+ | Halaman data sebagai kartu (Work Order, Sparepart, Pelanggan,
+ | Kendaraan, Mekanik). Penanda: isi kartu memakai class .bk-cv.
+ |================================================================*/
+.fi-ta-ctn:has(.bk-cv) {
+    background-color: transparent !important;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    overflow: visible !important;
+}
+
+.fi-ta-ctn:has(.bk-cv) .fi-ta-header-toolbar {
+    border: 0 !important;
+    padding-inline: 0;
+}
+
+.fi-ta-ctn:has(.bk-cv) .fi-ta-content {
+    border: 0 !important;
+    background-color: transparent !important;
+    overflow: visible !important;
+}
+
+.fi-ta-ctn:has(.bk-cv) .fi-ta-content-grid {
+    padding-inline: 0 !important;
+}
+
+.fi-ta-record:has(.bk-cv) {
+    display: flex;
+    flex-direction: column;
+    border-radius: 22px !important;
+    background-color: var(--bk-card) !important;
+    box-shadow: 0 0 0 1px var(--bk-line) !important;
+    --tw-ring-color: transparent !important;
+    transition: transform 0.45s var(--bk-ease), box-shadow 0.45s var(--bk-ease);
+    animation: bk-rise 0.8s var(--bk-ease) backwards;
+}
+
+.fi-ta-record:has(.bk-cv):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 0 1px var(--bk-line), 0 24px 48px -24px var(--bk-shadow) !important;
+}
+
+.fi-ta-record:has(.bk-cv):nth-child(2) { animation-delay: 50ms; }
+.fi-ta-record:has(.bk-cv):nth-child(3) { animation-delay: 100ms; }
+.fi-ta-record:has(.bk-cv):nth-child(4) { animation-delay: 150ms; }
+.fi-ta-record:has(.bk-cv):nth-child(5) { animation-delay: 200ms; }
+.fi-ta-record:has(.bk-cv):nth-child(n + 6) { animation-delay: 250ms; }
+
+/* Isi kartu mengisi tinggi kartu, tombol aksi rapi di bawah */
+.fi-ta-record:has(.bk-cv) > div,
+.fi-ta-record:has(.bk-cv) > a {
+    flex: 1 1 auto;
+}
+
+.fi-ta-record:has(.bk-cv) :is(div, a, span):has(.bk-cv),
+.bk-cv {
+    width: 100%;
+}
+
+.fi-ta-record:has(.bk-cv) :is(div, a):has(.bk-cv) {
+    flex: 1 1 auto;
+    align-items: stretch !important;
+    justify-content: flex-start !important;
+}
+
+.fi-ta-record:has(.bk-cv) .fi-ta-actions {
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+}
+
+/* Tab filter berbentuk pil */
+.fi-tabs {
+    border-radius: 9999px !important;
+    background-color: rgb(28 27 25 / 0.05) !important;
+    box-shadow: none !important;
+    --tw-ring-color: transparent !important;
+    padding: 5px !important;
+}
+
+.fi-tabs-item {
+    border-radius: 9999px !important;
+    transition: background-color 0.3s var(--bk-ease), box-shadow 0.3s var(--bk-ease);
+}
+
+.fi-tabs-item-active {
+    background-color: var(--bk-card) !important;
+    box-shadow: 0 2px 8px rgb(60 40 20 / 0.12) !important;
+}
+
+.fi-tabs-item-active .fi-tabs-item-label {
+    color: var(--bk-text) !important;
+}
+
+/* Titik berdenyut kuning (Sedang Dikerjakan, Sibuk, Di bengkel) */
+@keyframes bk-pulse-amber {
+    0% { box-shadow: 0 0 0 0 rgb(217 119 6 / 0.5); }
+    70% { box-shadow: 0 0 0 8px rgb(217 119 6 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(217 119 6 / 0); }
+}
+
+.bk-pulse-amber {
+    animation: bk-pulse-amber 2s infinite;
+}
+
+/* Plat nomor bergaya pelat asli (kartu Kendaraan) */
+.bk-plate-tag {
+    display: inline-flex;
+    padding: 4px;
+    border-radius: 10px;
+    background-color: var(--bk-text);
+    transition: transform 0.5s var(--bk-ease);
+}
+
+.bk-plate-tag > span {
+    display: block;
+    padding: 5px 13px 3px;
+    border: 1.5px solid rgb(247 245 240 / 0.7);
+    border-radius: 7px;
+    color: #f7f5f0;
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+
+.fi-ta-record:hover .bk-plate-tag {
+    transform: rotate(-1.5deg) scale(1.03);
+}
+
+.bk-chip {
+    transition: background-color 0.25s var(--bk-ease), border-color 0.25s var(--bk-ease);
+}
+
+.bk-chip:hover {
+    background-color: var(--bk-card-2) !important;
+    border-color: rgb(140 90 43 / 0.35) !important;
 }
 
 /* Total di modal bayar */
@@ -584,7 +691,6 @@ a.bk-card:hover {
  | Elemen sentuh minimal 44px di layar sentuh
  |================================================================*/
 @media (pointer: coarse) {
-
     .fi-btn,
     .fi-input-wrp {
         min-height: 44px;
@@ -655,14 +761,15 @@ a.bk-card:hover {
  | Kurangi gerakan (pengaturan OS)
  |================================================================*/
 @media (prefers-reduced-motion: reduce) {
-
-    .fi-page>section>*,
+    .fi-page > section > *,
     .fi-page:not(:has(> section)),
     .bk-rise,
     .bk-bar,
     .bk-fill,
     .bk-pulse,
     .bk-bayar .fi-ta-record,
+    .fi-ta-record:has(.bk-cv),
+    .bk-pulse-amber,
     .fi-modal-window,
     .fi-simple-main .fi-simple-header,
     .fi-simple-main form {
@@ -672,7 +779,9 @@ a.bk-card:hover {
     .bk-lift:hover,
     button.bk-card:hover,
     a.bk-card:hover,
-    .bk-bayar .fi-ta-record:hover {
+    .bk-bayar .fi-ta-record:hover,
+    .fi-ta-record:has(.bk-cv):hover,
+    .fi-ta-record:hover .bk-plate-tag {
         transform: none;
     }
 }
@@ -681,7 +790,6 @@ a.bk-card:hover {
  | Cetak dari panel (halaman cetak punya layout sendiri)
  |================================================================*/
 @media print {
-
     .fi-sidebar,
     .fi-topbar {
         display: none !important;

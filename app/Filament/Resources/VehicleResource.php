@@ -6,7 +6,6 @@ use App\Enums\VehicleType;
 use App\Filament\Resources\VehicleResource\Pages;
 use App\Filament\Resources\VehicleResource\RelationManagers\ServiceHistoryRelationManager;
 use App\Models\Vehicle;
-use App\Support\Format;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -127,42 +126,27 @@ class VehicleResource extends Resource
     {
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
-                ->with('customer')
+                // workOrders di sini sengaja hanya WO aktif: untuk tanda "di bengkel" di kartu
+                ->with(['customer', 'workOrders' => fn ($q) => $q->active()->latest()])
                 ->withCount('workOrders')
                 ->withMax('workOrders', 'created_at'))
+            // Tiap kendaraan tampil sebagai kartu (view: filament/tables/cards/vehicle)
+            ->contentGrid(['md' => 2, 'xl' => 3])
             ->columns([
-                Tables\Columns\TextColumn::make('plate_number')
-                    ->label('Nomor polisi')
-                    ->searchable()
-                    ->sortable()
-                    ->weight(FontWeight::Bold)
-                    ->description(fn (Vehicle $record): string => trim($record->brand.' '.$record->model)),
-                Tables\Columns\TextColumn::make('customer.name')
-                    ->label('Pemilik')
-                    ->searchable()
-                    ->description(fn (Vehicle $record): ?string => $record->customer?->phone),
-                Tables\Columns\TextColumn::make('type')
-                    ->label('Jenis')
-                    ->badge()
-                    ->color('gray'),
-                Tables\Columns\TextColumn::make('work_orders_count')
-                    ->label('Servis')
-                    ->suffix('x')
-                    ->alignEnd()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('work_orders_max_created_at')
-                    ->label('Servis terakhir')
-                    ->formatStateUsing(fn ($state): string => Format::tanggal($state))
-                    ->placeholder('Belum pernah')
-                    ->sortable()
-                    ->color('gray'),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\ViewColumn::make('kartu')
+                        ->label('Kendaraan')
+                        ->view('filament.tables.cards.vehicle')
+                        ->searchable(query: fn (Builder $query, string $search): Builder => $query->where(fn (Builder $q) => $q
+                            ->where('plate_number', 'like', "%{$search}%")
+                            ->orWhere('brand', 'like', "%{$search}%")
+                            ->orWhere('model', 'like', "%{$search}%")
+                            ->orWhereHas('customer', fn (Builder $c) => $c->where('name', 'like', "%{$search}%")))),
+                ]),
             ])
+            ->searchPlaceholder('Cari plat, merek, pemilik')
             ->defaultSort('plate_number')
-            ->filters([
-                Tables\Filters\SelectFilter::make('type')
-                    ->label('Jenis')
-                    ->options(VehicleType::class),
-            ])
+            ->paginated([12, 24, 48])
             ->actions([
                 Tables\Actions\ViewAction::make()->label('Riwayat'),
                 Tables\Actions\EditAction::make()->label('Ubah'),

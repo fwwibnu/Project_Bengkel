@@ -12,9 +12,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
-use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -82,60 +80,32 @@ class MechanicResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn (Builder $query) => $query->with(['user', 'activeWorkOrders']))
-            ->contentGrid(['md' => 2, 'xl' => 3])
+            ->modifyQueryUsing(fn (Builder $query) => $query
+                ->with(['user', 'activeWorkOrders.vehicle', 'activeWorkOrders.customer'])
+                ->withCount(['workOrders as finished_month' => fn (Builder $q) => $q
+                    ->whereNotNull('finished_at')
+                    ->whereBetween('finished_at', [now()->startOfMonth(), now()->endOfMonth()])]))
+            // Tiap mekanik tampil sebagai kartu (view: filament/tables/cards/mechanic)
+            ->contentGrid(['md' => 2])
             ->columns([
-                Split::make([
-                    Stack::make([
-                        Tables\Columns\TextColumn::make('name')
-                            ->label('Nama')
-                            ->weight(FontWeight::Bold)
-                            ->searchable()
-                            ->sortable(),
-                        Tables\Columns\TextColumn::make('specialty')
-                            ->label('Keahlian')
-                            ->color('gray')
-                            ->placeholder('Keahlian belum diisi')
-                            ->searchable(),
-                    ])->space(1),
-                    Tables\Columns\TextColumn::make('status')
-                        ->label('Status')
-                        ->badge()
-                        ->grow(false),
-                ]),
                 Stack::make([
-                    Tables\Columns\TextColumn::make('phone')
-                        ->label('No. HP')
-                        ->icon('heroicon-m-phone')
-                        ->placeholder('No. HP belum diisi')
-                        ->color('gray'),
-                    Tables\Columns\TextColumn::make('user.username')
-                        ->label('Akun')
-                        ->icon('heroicon-m-user-circle')
-                        ->prefix('Akun: ')
-                        ->placeholder('Belum terhubung ke akun')
-                        ->color('gray'),
-                    Tables\Columns\TextColumn::make('wo_aktif')
-                        ->label('Work Order aktif')
-                        ->icon('heroicon-m-clipboard-document-list')
-                        ->getStateUsing(fn (Mechanic $record): ?string => $record->activeWorkOrders->first()?->number)
-                        ->prefix('WO aktif: ')
-                        ->placeholder('Tidak ada Work Order aktif')
-                        ->color('gray'),
-                ])->space(2)->extraAttributes(['class' => 'pt-3']),
+                    Tables\Columns\ViewColumn::make('kartu')
+                        ->label('Mekanik')
+                        ->view('filament.tables.cards.mechanic')
+                        ->searchable(['name', 'specialty']),
+                ]),
             ])
+            ->searchPlaceholder('Cari nama atau keahlian')
             ->defaultSort('name')
-            ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->label('Status')
-                    ->options(MechanicStatus::class),
-            ])
             ->actions([
                 Tables\Actions\Action::make('liburkan')
                     ->label('Set Libur')
                     ->icon('heroicon-m-moon')
                     ->color('gray')
                     ->visible(fn (Mechanic $record): bool => $record->status !== MechanicStatus::Libur && (auth()->user()?->can('update', $record) ?? false))
+                    // Masih memegang WO aktif → tombol nonaktif (aturan yang sama dicek ulang di MechanicService)
+                    ->disabled(fn (Mechanic $record): bool => $record->activeWorkOrders->isNotEmpty())
+                    ->tooltip(fn (Mechanic $record): ?string => $record->activeWorkOrders->isNotEmpty() ? 'Masih memegang Work Order aktif' : null)
                     ->requiresConfirmation()
                     ->modalHeading(fn (Mechanic $record): string => 'Set '.$record->name.' libur?')
                     ->modalDescription('Mekanik yang libur tidak bisa dipilih saat membuat Work Order.')

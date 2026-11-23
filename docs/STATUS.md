@@ -42,7 +42,7 @@ Kesimpulan audit: F1 sebagian, F2–F12 belum ada.
 | F11 | Akun pengguna | **Sudah** | `Filament/Resources/UserResource.php`, `Policies/UserPolicy.php` |
 | F12 | Notifikasi toast | **Sudah** | Notifikasi Filament (pojok kanan atas) di semua aksi, lewat `Filament/Support/ServiceAction.php` |
 
-Status uji (12 Nov 2026, di laptop Laragon): `php artisan test` → **38 passed (175 assertions)**. Uji manual end-to-end semua peran juga sudah dijalankan (lihat bagian 7).
+Status uji (22 Nov 2026): `php artisan test` → **43 passed (205 assertions)**. Uji manual end-to-end semua peran juga sudah dijalankan (lihat bagian 7).
 
 ---
 
@@ -103,7 +103,7 @@ Sesuai `ATURAN_PROJECT.md`, kalau kode berbeda dengan docs, kode yang diikuti.
 
 ## 7. Pengujian
 
-Jalankan: `php artisan test`. Hasil terakhir (12 Nov 2026): **38 passed, 175 assertions, ±4 detik**.
+Jalankan: `php artisan test`. Hasil terakhir (22 Nov 2026): **43 passed, 205 assertions, ±4 detik**.
 
 Uji manual end-to-end (12 Nov 2026), semua sesuai:
 - Admin buat WO (hanya mekanik Tersedia yang bisa dipilih) → Mekanik mulai, catat sparepart (stok kurang ditolak dengan pesan jelas), hapus lalu catat ulang (tercatat Keluar/Batal/Keluar), tandai selesai (catatan wajib) → Kasir proses bayar (total = sparepart + jasa) → nota A5 + cetak → Riwayat Transaksi & Riwayat Servis.
@@ -123,6 +123,7 @@ Perbaikan setelah uji di laptop:
 | `PaymentTest` | Total benar & WO → Dibayar, tidak bisa bayar dua kali, WO belum selesai ditolak, biaya jasa negatif ditolak, hanya Kasir yang bisa bayar |
 | `ReportTest` | Sirkulasi stok (masuk/keluar/batal/awal/akhir), ringkasan pendapatan, tren 6 bulan |
 | `PanelActionsTest` | Aksi "Catat sparepart" di halaman mekanik & "Proses Bayar" di halaman kasir |
+| `DataPagesTest` | Halaman kartu Work Order, Sparepart, Pelanggan, Kendaraan, Mekanik: data tampil, pencarian, dan tab filter |
 | `ExampleTest` | `/` mengarah ke login |
 
 Pemilik tidak bisa mengubah data apa pun: dicek di `AuthAndAccessTest` (403 di semua halaman ubah), `WorkOrderFlowTest` (buat WO ditolak), `StockTest` (Tambah Stok ditolak), dan `PaymentTest` (bayar ditolak).
@@ -173,3 +174,19 @@ Dipilih dari rancangan visual (4 pilihan tema dibandingkan langsung). Hanya tamp
 | Animasi | Isi halaman naik berurutan, kartu terangkat saat disorot, tombol mengempis saat ditekan, modal muncul dengan latar blur. Mati otomatis jika OS diset "kurangi gerakan". |
 | Dashboard | Ditata ulang: sapaan sesuai jam, pendapatan bulan ini (angka berjalan), grafik batang 6 bulan, 4 kartu ringkas, daftar mekanik + status, stok yang perlu dibeli. Widget bawaan Filament dihapus. |
 | Pembayaran | Tiap Work Order tampil sebagai kartu, ringkasan "menunggu" & "masuk hari ini", modal bayar dengan pilihan cepat biaya jasa dan tombol metode Tunai/Non-tunai. |
+
+---
+
+## 10. Halaman data ditata ulang sebagai kartu (22 Nov 2026)
+
+Mengikuti rancangan yang sudah disetujui. Tabel Filament tetap dipakai (pencarian, tab, aksi, hak akses tidak berubah), hanya tampilannya diganti kartu lewat `ViewColumn` + `contentGrid`.
+
+| Halaman | Isi kartu | Tambahan |
+|---|---|---|
+| Work Order | Plat besar, kendaraan & pelanggan, keluhan/pekerjaan + sparepart, garis progres Baru → Dikerjakan → Selesai → Dibayar, mekanik, nominal | Titik berdenyut untuk yang sedang dikerjakan; pencarian plat/nomor WO/pelanggan |
+| Sparepart | Kode, nama, badge Aman/Menipis/Habis, stok besar, bar sisa stok dengan penanda minimal, harga jual & beli | Tab Semua / Perlu dibeli / Habis / Aman; ringkasan jumlah jenis, unit, dan yang perlu dibeli |
+| Pelanggan | Inisial, nama, HP, alamat, kendaraan miliknya, servis terakhir | Tanda "Di bengkel" kalau kendaraannya sedang diservis; cari lewat nama/HP/plat |
+| Kendaraan | Plat bergaya pelat nomor, jenis, merek/model, tahun, pemilik, status di bengkel atau servis terakhir, jumlah servis | Tab Semua / Motor / Mobil |
+| Mekanik | Inisial, keahlian, status berdenyut, Work Order yang sedang dipegang, HP, akun login, selesai bulan ini | Tab per status; tombol Set Libur nonaktif selama masih memegang WO (aturan tetap dicek di `MechanicService`) |
+
+File: `app/Filament/Resources/{WorkOrder,Sparepart,Customer,Vehicle,Mechanic}Resource.php` + halaman `List*`, view `resources/views/filament/tables/cards/*.blade.php`, CSS kartu di `theme.css`, tes `tests/Feature/DataPagesTest.php`.

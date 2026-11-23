@@ -6,15 +6,12 @@ use App\Filament\Resources\SparepartResource\Pages;
 use App\Filament\Support\ServiceAction;
 use App\Models\Sparepart;
 use App\Services\StockService;
-use App\Support\Format;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class SparepartResource extends Resource
 {
@@ -119,65 +116,19 @@ class SparepartResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            // Tiap sparepart tampil sebagai kartu (view: filament/tables/cards/sparepart)
+            ->contentGrid(['md' => 2, 'xl' => 3])
             ->columns([
-                Tables\Columns\TextColumn::make('code')
-                    ->label('Kode')
-                    ->searchable()
-                    ->sortable()
-                    ->color('gray'),
-
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nama')
-                    ->searchable()
-                    ->sortable()
-                    ->weight(FontWeight::SemiBold),
-
-                Tables\Columns\TextColumn::make('kondisi')
-                    ->label('Kondisi')
-                    ->getStateUsing(fn (Sparepart $record): string => $record->stockLabel() ?? 'Aman')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'Habis' => 'danger',
-                        'Menipis' => 'warning',
-                        default => 'success',
-                    }),
-
-                Tables\Columns\TextColumn::make('stock')
-                    ->label('Stok')
-                    ->sortable()
-                    ->alignEnd()
-                    ->weight(FontWeight::Bold)
-                    ->color(fn (Sparepart $record): ?string => $record->isOutOfStock() ? 'danger' : ($record->isLowStock() ? 'warning' : null))
-                    ->extraAttributes(['class' => 'tabular-nums']),
-
-                Tables\Columns\TextColumn::make('min_stock')
-                    ->label('Minimal')
-                    ->sortable()
-                    ->alignEnd()
-                    ->extraAttributes(['class' => 'tabular-nums']),
-
-                Tables\Columns\TextColumn::make('purchase_price')
-                    ->label('Harga beli')
-                    ->formatStateUsing(fn ($state): string => Format::rupiah($state))
-                    ->sortable()
-                    ->alignEnd()
-                    ->toggleable()
-                    ->extraAttributes(['class' => 'tabular-nums']),
-
-                Tables\Columns\TextColumn::make('selling_price')
-                    ->label('Harga jual')
-                    ->formatStateUsing(fn ($state): string => Format::rupiah($state))
-                    ->sortable()
-                    ->alignEnd()
-                    ->extraAttributes(['class' => 'tabular-nums']),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\ViewColumn::make('kartu')
+                        ->label('Sparepart')
+                        ->view('filament.tables.cards.sparepart')
+                        ->searchable(['code', 'name']),
+                ]),
             ])
+            ->searchPlaceholder('Cari kode atau nama')
             ->defaultSort('code')
-            ->filters([
-                Tables\Filters\Filter::make('menipis')
-                    ->label('Hanya stok menipis')
-                    ->toggle()
-                    ->query(fn (Builder $query): Builder => $query->lowStock()),
-            ])
+            ->paginated([15, 30, 60])
             ->actions([
                 static::tambahStokAction(),
                 Tables\Actions\EditAction::make()->label('Ubah'),

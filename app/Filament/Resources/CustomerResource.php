@@ -5,12 +5,10 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers\VehiclesRelationManager;
 use App\Models\Customer;
-use App\Support\Format;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -70,34 +68,24 @@ class CustomerResource extends Resource
         return $table
             ->modifyQueryUsing(fn (Builder $query) => $query
                 ->with('vehicles')
-                ->withMax('workOrders', 'created_at'))
+                ->withMax('workOrders', 'created_at')
+                ->withExists(['workOrders as in_shop' => fn (Builder $q) => $q->active()]))
+            // Tiap pelanggan tampil sebagai kartu (view: filament/tables/cards/customer)
+            ->contentGrid(['md' => 2, 'xl' => 3])
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nama')
-                    ->searchable()
-                    ->sortable()
-                    ->weight(FontWeight::Bold)
-                    ->description(fn (Customer $record): ?string => $record->address),
-
-                Tables\Columns\TextColumn::make('phone')
-                    ->label('No. HP')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('vehicles.plate_number')
-                    ->label('Kendaraan')
-                    ->badge()
-                    ->color('gray')
-                    ->searchable()
-                    ->placeholder('Belum ada kendaraan'),
-
-                Tables\Columns\TextColumn::make('work_orders_max_created_at')
-                    ->label('Servis terakhir')
-                    ->formatStateUsing(fn ($state): string => Format::tanggal($state))
-                    ->placeholder('Belum pernah')
-                    ->sortable()
-                    ->color('gray'),
+                Tables\Columns\Layout\Stack::make([
+                    Tables\Columns\ViewColumn::make('kartu')
+                        ->label('Pelanggan')
+                        ->view('filament.tables.cards.customer')
+                        ->searchable(query: fn (Builder $query, string $search): Builder => $query->where(fn (Builder $q) => $q
+                            ->where('name', 'like', "%{$search}%")
+                            ->orWhere('phone', 'like', "%{$search}%")
+                            ->orWhereHas('vehicles', fn (Builder $v) => $v->where('plate_number', 'like', "%{$search}%")))),
+                ]),
             ])
+            ->searchPlaceholder('Cari nama, HP, atau plat')
             ->defaultSort('name')
+            ->paginated([12, 24, 48])
             ->actions([
                 Tables\Actions\EditAction::make()->label('Lihat / Ubah'),
                 Tables\Actions\DeleteAction::make()

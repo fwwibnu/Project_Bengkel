@@ -16,7 +16,7 @@ class ListMechanics extends ListRecords
 
     public function getSubheading(): ?string
     {
-        return 'Status Tersedia/Sibuk berubah otomatis mengikuti Work Order. Status Libur diatur di sini.';
+        return 'Tersedia/Sibuk otomatis mengikuti Work Order, Libur diatur di sini.';
     }
 
     protected function getHeaderActions(): array
